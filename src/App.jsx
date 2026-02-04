@@ -2,27 +2,39 @@ import { useEffect, useState } from "react";
 import TodoLists from "./components/TodoLists";
 import AddTodo from "./components/AddTodo";
 
-// const initialTodoLists = [
-//   { title: "Study", description: "Read React docs", completed: false },
-//   { title: "Exercise", description: "Go for a run", completed: false },
-//   {
-//     title: "Grocery Shopping",
-//     description: "Buy vegetables",
-//     completed: false,
-//   },
-// ];
-
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
   const [todoLists, setTodoLists] = useState([]);
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/todos")
-      .then((response) => response.json())
-      .then((data) => setTodoLists(data));
+    // async await
+    const getTodos = async () => {
+      setIsLoading(true);
+
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/todos"
+      );
+      const data = await response.json();
+
+      setTodoLists(data);
+
+      setIsLoading(false);
+    };
+
+    getTodos();
+
+    // fetch("https://jsonplaceholder.typicode.com/todos")
+    //   .then((response) => {
+    //     console.log(response);
+
+    //     return response.json();
+    //   })
+    //   .then((data) => setTodoLists(data));
   }, []);
 
   return (
     <>
+      {isLoading && <h1 className="text-2xl text-center">Loading</h1>}
       <AddTodo todoLists={todoLists} setTodoLists={setTodoLists} />
       <TodoLists todoLists={todoLists} setTodoLists={setTodoLists} />
     </>
